@@ -1,0 +1,32 @@
+{% extends 'BASE.html' %}
+{% block head %}
+    {{ block.super }}
+{% endblock head %}
+{% block title %}
+    新增客户
+{% endblock title %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-7">
+                <form action="" method="post" class="form-horizontal" novalidate>
+            {% csrf_token %}
+                    {% for field in form_obj %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}" class="control-label col-sm-2">{{ field.label }}</label>
+                            <div class="col-sm-8">
+                                {{ field }}
+                                <span class="text-danger">{{ field.errors.0 }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <input type="submit" class="btn btn-success pull-right" value="添加">
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+{% block js %}
+    {{ block.super }}
+{% endblock js %}

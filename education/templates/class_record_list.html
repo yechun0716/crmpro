@@ -1,0 +1,125 @@
+{% extends 'BASE.html' %}
+{% load static %}
+{% block head %}
+    {{ block.super }}
+{% endblock head %}
+{% block title %}
+    班级学习记录表
+{% endblock title %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"></h3>
+                    <form action="" method="get" class="navbar-form navbar-left">
+                        <div class="input-group">
+                            <div class="input-group-btn btn-info">
+                                <select name="condition" id="search" class="btn input-group-sm btn-info"
+                                        style="border: 0">
+                                </select>
+                            </div>
+                            <input type="text" name="q" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button type="submit" id="search-btn" class="btn btn-flat">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+
+                        <a href="" class="btn btn-primary pull-right">新增记录</a>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+
+                        </div>
+                    </div>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="input-group" style="width: 220px;margin-bottom: 5px;margin-left: 15px">
+                            <select name="operate" id="operate" class="form-control btn-default">
+                                <option value="batch_create">批量添加学生学习记录</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-warning btn-flat">Go!</button>
+                            </span>
+                        </div>
+
+
+                        <table id="example2" class="table table-bordered table-hover text-center">
+                            <thead>
+                            <tr>
+                                <th style="width: 8%">
+                                    <button type="button" class="btn btn-info btn-xs"><input
+                                            type="checkbox" name="batch_choose"></button>
+                                </th>
+                                <th style="width: 5%">序号</th>
+                                <th>班级</th>
+                                <th>节次</th>
+                                <th>老师</th>
+                                <th>课程标题</th>
+                                <th>学习详情</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for record in all_records %}
+                                <tr>
+                                    <td><input type="checkbox" name="choose" value="{{ record.pk }}"></td>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ record.class_obj }}</td>
+                                    <td>{{ record.day_num }}</td>
+                                    <td>{{ record.teacher }}</td>
+                                    <td>{{ record.course_title|default:"暂无" }}</td>
+                                    <td><a href="{% url 'student_record' record.pk %}">查看</a></td>
+                                    <td>
+                                        <a style="color: #00c3cc;" href="">
+                                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                        </a>
+                                        |
+                                        <a style="color: #d9534f;" href="" >
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                        {% if not all_records %}
+                            <h3 class="text-center">没有相关记录！</h3>
+                        {% endif %}
+
+                        <div class="pull-right" style="display:inline-block; width: 120px;margin: 22px 10px">
+                            {{ jump_tag|safe }}
+                        </div>
+
+                        <div class="pull-right">
+                            {{ paginator_tag|safe }}
+                        </div>
+                    </form>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+{% endblock content %}
+{% block js %}
+    {{ block.super }}
+{% endblock js %}
+
+{% block customjs %}
+    <script>
+        $("[name=batch_choose]").click(function () {
+            var status = $(this).prop("checked");
+            $("[name=choose]").prop('checked', status)
+        });
+    </script>
+{% endblock customjs %}

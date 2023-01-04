@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{% for menu in menus_dict.values %}
+    {% if menu.children|length == 1 %}
+        <li class="{{ menu.class }}">
+            <a href="{{ menu.children.0.url }}">
+                <i class="fa {{ menu.icon }}"></i>
+                <span>{{ menu.title }}</span>
+                <span class="pull-right-container">
+                </span>
+            </a>
+        </li>
+    {% else %}
+        <li class="treeview {{ menu.class }}">
+            <a href="">
+                <i class="fa {{ menu.icon }}"></i>
+                <span>{{ menu.title }}</span>
+                <span class="pull-right-container">
+                    <span class="fa fa-angle-left pull-right"></span>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                {% for child_menu in menu.children %}
+                    <li class="{{ child_menu.class }}">
+                        <a href="{{ child_menu.url }}">
+                            <i class="fa fa-circle-o"></i> {{ child_menu.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endif %}
+{% endfor %}
+
+
+
+<script></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+{% extends 'BASE.html' %}
+{% load static %}
+{% block head %}
+    {{ block.super }}
+{% endblock head %}
+{% block title %}
+    学员学习记录
+{% endblock title %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="text-center">{{ class_record_obj.class_obj }}-day{{ class_record_obj.day_num }}天-成绩录入</h3>
+                    <form action="" method="get" class="navbar-form navbar-left">
+                        <div class="input-group">
+                            <div class="input-group-btn btn-info">
+                                <select name="condition" id="search" class="btn input-group-sm btn-info"
+                                        style="border: 0">
+
+                                </select>
+                            </div>
+                            <input type="text" name="q" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button type="submit" id="search-btn" class="btn btn-flat">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+
+
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+
+                        </div>
+                    </div>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="input-group" style="width: 220px;margin-bottom: 5px;margin-left: 15px">
+                            <select name="operate" id="operate" class="form-control btn-default">
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-warning btn-flat">Go!</button>
+                            </span>
+                        </div>
+
+                        <table id="example2" class="table table-bordered table-hover text-center">
+
+                            <!--==========================第一种方式，手动生成批量修改表============================-->
+                            {#                            <thead>#}
+                            {#                            <tr>#}
+                            {#                                <th style="width: 8%">#}
+                            {#                                    <button type="button" class="btn btn-info btn-xs">#}
+                            {#                                        <span>批量</span>#}
+                            {#                                        <input type="checkbox" name="batch_choose">#}
+                            {#                                    </button>#}
+                            {#                                </th>#}
+                            {#                                <th style="width: 5%">序号</th>#}
+                            {#                                <th>学员</th>#}
+                            {#                                <th>考勤</th>#}
+                            {#                                <th>成绩</th>#}
+                            {#                                <th>批语</th>#}
+                            {#                            </tr>#}
+                            {#                            </thead>#}
+                            {#                            <tbody>#}
+                            {#                            {% for record in all_records %}#}
+                            {#                                <tr>#}
+                            {#                                    <td><input type="checkbox" name="choose" value="{{ record.pk }}"></td>#}
+                            {#                                    <td>{{ forloop.counter }}</td>#}
+                            {#                                    <td>{{ record.student }}</td>#}
+                            {#                                    <td>{{ record.get_record_display }}</td>#}
+                            {#                                    <td>#}
+                            {#                                        <select name="score_{{ record.pk }}" id="">#}
+                            {#                                            {% for choice in score_choices %}#}
+                            {#                                                {% if record.score == choice.0 %}#}
+                            {#                                                    <option value="{{ choice.0 }}" selected>{{ choice.1 }}#}
+                            {#                                                        {% else %}#}
+                            {#                                                    <option value="{{ choice.0 }}">{{ choice.1 }}#}
+                            {#                                                {% endif %}#}
+                            {#                                            {% endfor %}#}
+                            {#                                        </select>#}
+                            {#                                    </td>#}
+                            {#                                    <td>#}
+                            {#                                        <textarea name="homework_note_{{ record.pk }}" id="" cols="16" rows="1" class="form-control">{{ record.homework_note|default:"" }}</textarea>#}
+                            {#                                    </td>#}
+                            {#                                </tr>#}
+                            {#                            {% endfor %}#}
+                            {#                            </tbody>#}
+
+
+
+                            <!--==========================第二种方式，通过modelformset生成============================-->
+                            {{ all_records.management_form }}  <!-- 这句话一定要加上，固定的昂 不然会报错['ManagementForm data is missing or has been tampered with'] -->
+                            <thead>
+                            <tr>
+                                <th>姓名</th>
+                                <th>考勤</th>
+                                <th>作业成绩</th>
+                                <th>作业评语</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for record in all_records %}
+                                <tr>
+                                    {{ record.id }}
+                                    <td>{{ record.instance.student }}</td>
+                                    <td>{{ record.instance.get_record_display }}</td>
+                                    <td>{{ record.score }}</td>
+                                    <td>{{ record.homework_note }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                        <input type="submit" class="btn btn-success pull-right" value="批量提交">
+                        {% if not all_records %}
+                            <h3 class="text-center">没有相关记录！</h3>
+                        {% endif %}
+
+                        <div class="pull-right" style="display:inline-block; width: 120px;margin: 22px 10px">
+                            {{ jump_tag|safe }}
+                        </div>
+
+                        <div class="pull-right">
+                            {{ paginator_tag|safe }}
+                        </div>
+                    </form>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+{% endblock content %}
+{% block js %}
+    {{ block.super }}
+{% endblock js %}
+
+{% block customjs %}
+    <script>
+        $("[name=batch_choose]").click(function () {
+            var status = $(this).prop("checked");
+            $("[name=choose]").prop('checked', status)
+        });
+    </script>
+{% endblock customjs %}
